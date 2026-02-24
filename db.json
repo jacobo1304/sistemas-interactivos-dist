@@ -9,6 +9,21 @@
       "id": 2,
       "name": "Maestro",
       "cards": [30276, 11061, 16498]
+    },
+    {
+      "id": 3,
+      "name": "Sakura",
+      "cards": [2, 15, 1000]
+    },
+    {
+      "id": 4,
+      "name": "Naruto",
+      "cards": [3, 25, 2000]
+    },
+    {
+      "id": 5,
+      "name": "Sasuke",
+      "cards": [4, 35, 3000]
     }
   ]
 }
