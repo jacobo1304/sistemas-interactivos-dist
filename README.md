@@ -1,1 +1,2 @@
-# sistemas-interactivos-dist
+# Sistemas interactivos distribuidos.
+Jacobo Rodríguez Guevara
