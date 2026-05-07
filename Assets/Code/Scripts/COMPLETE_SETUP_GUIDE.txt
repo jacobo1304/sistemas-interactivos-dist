@@ -1,0 +1,468 @@
+/*
+=== COMPLETE SCENE SETUP AND WIRING GUIDE ===
+
+This document outlines all scenes, hierarchies, components, and Inspector assignments needed
+for the complete Firebase + Simon Says + API integration system.
+
+================================================================================
+SCENE 1: LOGIN
+================================================================================
+
+HIERARCHY:
+├── Canvas (Tag: "Canvas")
+│   ├── Background (Image)
+│   ├── LoginPanel (Panel)
+│   │   ├── EmailInput (TMP_InputField)
+│   │   ├── PasswordInput (TMP_InputField)
+│   │   ├── LoginButton (Button)
+│   │   ├── RegisterButton (Button)
+│   │   ├── ForgotPasswordButton (Button)
+│   │   └── ErrorText (TextMeshProUGUI)
+│
+├── FirebaseManager (Empty GameObject)
+│   └── Component: FirebaseManager.cs
+
+COMPONENTS TO ASSIGN:
+
+[Canvas]
+  CanvasScaler → Reference Resolution: 1920x1080
+
+[LoginPanel]
+  LayoutGroup (optional): GridLayoutGroup or VerticalLayoutGroup
+
+[EmailInput]
+  - TextMeshProUGUI: for displaying input
+  - TMP_InputField:
+    - Text Component: EmailInput's TextMeshProUGUI child
+    - Content Type: Email
+    - Character Validation: Name
+
+[PasswordInput]
+  - TextMeshProUGUI: for displaying input
+  - TMP_InputField:
+    - Text Component: PasswordInput's TextMeshProUGUI child
+    - Content Type: Password
+    - Character Validation: Alphanumeric
+    - Line Type: Single Line
+
+[LoginButton]
+  - Button
+  - Interactable: TRUE
+  - Navigation: None
+
+[RegisterButton]
+  - Button
+  - Interactable: TRUE
+  - Navigation: None
+
+[ForgotPasswordButton]
+  - Button
+  - Interactable: TRUE
+  - Navigation: None
+
+[ErrorText]
+  - TextMeshProUGUI
+  - Horizontal Alignment: Left
+  - Vertical Alignment: Top
+  - Font Size: 32
+
+[FirebaseManager]
+  - FirebaseManager.cs (script)
+
+WIRING IN INSPECTOR:
+
+LoginUI.cs (assign to Canvas or LoginPanel):
+  - emailInput → EmailInput (TMP_InputField)
+  - passwordInput → PasswordInput (TMP_InputField)
+  - loginButton → LoginButton (Button)
+  - registerButton → RegisterButton (Button)
+  - forgotPasswordButton → ForgotPasswordButton (Button)
+  - errorText → ErrorText (TextMeshProUGUI)
+
+On LoginButton > Button > On Click ():
+  - Drag LoginUI GameObject → LoginUI.cs → OnLoginClicked()
+
+On RegisterButton > Button > On Click ():
+  - Drag LoginUI GameObject → LoginUI.cs → OnRegisterClicked()
+
+On ForgotPasswordButton > Button > On Click ():
+  - Drag LoginUI GameObject → LoginUI.cs → OnForgotPasswordClicked()
+
+================================================================================
+SCENE 2: REGISTER
+================================================================================
+
+HIERARCHY:
+├── Canvas
+│   ├── Background (Image)
+│   ├── RegisterPanel (Panel)
+│   │   ├── EmailInput (TMP_InputField)
+│   │   ├── PasswordInput (TMP_InputField)
+│   │   ├── UsernameInput (TMP_InputField)
+│   │   ├── RegisterButton (Button)
+│   │   └── ErrorText (TextMeshProUGUI)
+
+COMPONENTS TO ASSIGN:
+
+[RegisterUI.cs]
+  - Assign to Canvas or RegisterPanel
+
+WIRING IN INSPECTOR:
+
+RegisterUI.cs:
+  - emailInput → EmailInput (TMP_InputField)
+  - passwordInput → PasswordInput (TMP_InputField)
+  - usernameInput → UsernameInput (TMP_InputField)
+  - registerButton → RegisterButton (Button)
+  - errorText → ErrorText (TextMeshProUGUI)
+
+On RegisterButton > Button > On Click ():
+  - Drag RegisterUI GameObject → RegisterUI.cs → OnRegisterClicked()
+
+================================================================================
+SCENE 3: FORGOTPASSWORD
+================================================================================
+
+HIERARCHY:
+├── Canvas
+│   ├── Background (Image)
+│   ├── ForgotPasswordPanel (Panel)
+│   │   ├── EmailInput (TMP_InputField)
+│   │   ├── SendButton (Button)
+│   │   ├── ConfirmationText (TextMeshProUGUI)
+│   │   └── ErrorText (TextMeshProUGUI)
+
+COMPONENTS TO ASSIGN:
+
+[ForgotPasswordUI.cs]
+  - Assign to Canvas or ForgotPasswordPanel
+
+WIRING IN INSPECTOR:
+
+ForgotPasswordUI.cs:
+  - emailInput → EmailInput (TMP_InputField)
+  - sendButton → SendButton (Button)
+  - confirmationText → ConfirmationText (TextMeshProUGUI)
+  - errorText → ErrorText (TextMeshProUGUI)
+
+On SendButton > Button > On Click ():
+  - Drag ForgotPasswordUI GameObject → ForgotPasswordUI.cs → OnSendClicked()
+
+================================================================================
+SCENE 4: GAME (Simon Says + Character Card Viewer)
+================================================================================
+
+HIERARCHY:
+├── Canvas (Tag: "Canvas")
+│   ├── HUDPanel
+│   │   ├── ScoreText (TextMeshProUGUI) → "Score: 0"
+│   │   ├── InstructionsText (TextMeshProUGUI) → "Observa el patrón"
+│   │   ├── LostText (TextMeshProUGUI) → (hidden by default)
+│   │   ├── LeaderboardButton (Button)
+│   │   └── LogoutButton (Button)
+│   │
+│   └── CardViewerPanel
+│       ├── PlayerNameText (TextMeshProUGUI)
+│       ├── UserNumberText (TextMeshProUGUI)
+│       ├── UserDropdown (TMP_Dropdown)
+│       ├── CardContainer (Panel / Scroll View Content)
+│       │   └── (Cards instantiated here)
+│       │
+│       └── CardPrefab (CardHolder - in Prefabs folder, NOT in hierarchy)
+│           ├── NombreCarta (TextMeshProUGUI)
+│           └── CardImage (RawImage)
+│
+├── SimonSaysCubes (Empty)
+│   ├── CubeRed (with SimonCube.cs)
+│   │   ├── Mesh: Cube
+│   │   ├── Material: Red
+│   │   ├── Collider: BoxCollider
+│   │   └── Component: SimonCube.cs
+│   │       └── AudioClip → Red.wav
+│   │
+│   ├── CubeGreen (with SimonCube.cs)
+│   │   ├── Mesh: Cube
+│   │   ├── Material: Green
+│   │   ├── Collider: BoxCollider
+│   │   └── Component: SimonCube.cs
+│   │       └── AudioClip → Green.wav
+│   │
+│   ├── CubeBlue (with SimonCube.cs)
+│   │   ├── Mesh: Cube
+│   │   ├── Material: Blue
+│   │   ├── Collider: BoxCollider
+│   │   └── Component: SimonCube.cs
+│   │       └── AudioClip → Blue.wav
+│   │
+│   └── CubeYellow (with SimonCube.cs)
+│       ├── Mesh: Cube
+│       ├── Material: Yellow
+│       ├── Collider: BoxCollider
+│       └── Component: SimonCube.cs
+│           └── AudioClip → Yellow.wav
+
+COMPONENTS TO ASSIGN:
+
+[SimonSays.cs] → Attach to Canvas or HUDPanel:
+  - cubes[4] → [CubeRed, CubeGreen, CubeBlue, CubeYellow]
+  - instructionsText → InstructionsText (TextMeshProUGUI)
+  - scoreText → ScoreText (TextMeshProUGUI)
+  - lostText → LostText (TextMeshProUGUI)
+  - sequenceDisplayInterval → 0.8
+  - sequenceDisplayDelay → 0.5
+
+[ApiManager.cs] → Attach to CardViewerPanel or separate GameObject:
+  - fakeApiUrl → "https://my-json-server.typicode.com/jacobo1304/sistemas-interactivos-dist/players"
+  - jikanUrl → "https://api.jikan.moe/v4/characters/"
+  - playerNameText → PlayerNameText (TextMeshProUGUI)
+  - userNumberText → UserNumberText (TextMeshProUGUI)
+  - userDropdown → UserDropdown (TMP_Dropdown)
+  - cardContainer → CardContainer (Transform)
+  - cardPrefab → CardPrefab (CardHolder prefab)
+  - requestMaxRetries → 3
+  - requestInitialDelay → 0.5
+
+[TMP_Dropdown (UserDropdown)]:
+  - Options: ["Usuario 1", "Usuario 2", "Usuario 3", "Usuario 4", "Usuario 5", "Usuario 6"]
+  - Value: 0
+  - On Value Changed (Int): 
+    - Drag ApiManager GameObject → ApiManager.cs → OnUserDropdownChanged(int)
+
+[LeaderboardButton]:
+  - Button
+  - On Click ():
+    - Drag GameObject → (create a simple script or drag UI element) → Load "Leaderboard" scene
+
+[LogoutButton]:
+  - Button
+  - On Click ():
+    - Drag GameObject → (create a LogoutHandler script) → FirebaseManager.Instance.Logout()
+    - Then SceneManager.LoadScene("Login")
+
+[CardPrefab] (Located in Assets/Prefabs/):
+  ├── NombreCarta (TextMeshProUGUI)
+  │   └── Text input field or child GameObject
+  └── CardImage (RawImage)
+      └── Raw Image component
+
+CUBE MATERIALS SETUP:
+- All 4 cubes must have materials with:
+  - Shader: Standard
+  - Rendering Mode: Fade (to support alpha blending for emission)
+  - Enable Color and Emission properties
+  
+Colors:
+  - Red: (1, 0, 0, 1)
+  - Green: (0, 1, 0, 1)
+  - Blue: (0, 0, 1, 1)
+  - Yellow: (1, 1, 0, 1)
+
+Emission (for highlight):
+  - Emission Color: (same as base color * 1.5)
+  - Emission Strength: 1.0
+
+================================================================================
+SCENE 5: LEADERBOARD
+================================================================================
+
+HIERARCHY:
+├── Canvas
+│   ├── TitleText (TextMeshProUGUI) → "Leaderboard"
+│   ├── LoadingText (TextMeshProUGUI) → (empty initially)
+│   ├── ScrollView
+│   │   └── Viewport
+│   │       └── Content (RectTransform - this is leaderboardContainer)
+│   │           └── (Rows instantiated here)
+│   │
+│   └── BackButton (Button)
+
+COMPONENTS TO ASSIGN:
+
+[LeaderboardUI.cs] → Attach to Canvas or TitleText parent:
+  - leaderboardContainer → Content (from ScrollView)
+  - leaderboardRowPrefab → LeaderboardRow prefab (in Assets/Prefabs/)
+  - loadingText → LoadingText (TextMeshProUGUI)
+  - backButton → BackButton (Button)
+
+[BackButton]:
+  - Button
+  - On Click ():
+    - Drag LeaderboardUI GameObject → LeaderboardUI.cs → OnBackClicked()
+
+[LeaderboardRowPrefab] (Located in Assets/Prefabs/):
+├── RankText (TextMeshProUGUI) → "#1"
+├── UsernameText (TextMeshProUGUI) → "PlayerName"
+└── ScoreText (TextMeshProUGUI) → "9999"
+
+Component: LeaderboardRow.cs
+  - rankText → RankText (TextMeshProUGUI)
+  - usernameText → UsernameText (TextMeshProUGUI)
+  - scoreText → ScoreText (TextMeshProUGUI)
+
+================================================================================
+SCENE MANAGER (Persistent Manager)
+================================================================================
+
+GameObject: "Managers" (or similar)
+  ├── FirebaseManager (DontDestroyOnLoad)
+  │   └── Component: FirebaseManager.cs
+  │       - No Inspector wiring needed (it initializes automatically)
+  │
+  └── (Optional) GameManager or other persistent singletons
+
+Add this GameObject to ALL scenes, or use a scene loader that spawns it on startup.
+
+Alternatively: Use a "Bootstrap" scene that loads first, spawns FirebaseManager, then
+loads the Login scene.
+
+================================================================================
+BUILD SETTINGS (File > Build Settings)
+================================================================================
+
+Scenes In Build (in order):
+  0. Bootstrap (if using it)
+  1. Login
+  2. Register
+  3. ForgotPassword
+  4. Game
+  5. Leaderboard
+
+Scene Manager calls must use exact names:
+  - SceneManager.LoadScene("Login")
+  - SceneManager.LoadScene("Register")
+  - SceneManager.LoadScene("ForgotPassword")
+  - SceneManager.LoadScene("Game")
+  - SceneManager.LoadScene("Leaderboard")
+
+================================================================================
+PREFABS TO CREATE
+================================================================================
+
+1. Assets/Prefabs/CardPrefab.prefab
+   - Root: CardHolder
+   - Children: NombreCarta (TextMeshProUGUI), CardImage (RawImage)
+   - Attach: LeaderboardRow.cs (NO, wrong prefab - this is for leaderboard rows)
+   
+   Actually for Cards:
+   - Root: CardHolder
+   - Children: NombreCarta (TextMeshProUGUI), CardImage (RawImage)
+   - NO script needed on this prefab
+
+2. Assets/Prefabs/LeaderboardRow.prefab
+   - Root: LeaderboardRow
+   - Children: RankText (TextMeshProUGUI), UsernameText (TextMeshProUGUI), ScoreText (TextMeshProUGUI)
+   - Attach: LeaderboardRow.cs
+     - rankText → RankText
+     - usernameText → UsernameText
+     - scoreText → ScoreText
+
+================================================================================
+REQUIRED ASSETS
+================================================================================
+
+Audio Files (Assets/Audio/):
+  - Red.wav
+  - Green.wav
+  - Blue.wav
+  - Yellow.wav
+
+Images/Materials (Assets/Art/ or Assets/Materials/):
+  - Red material (Standard shader, Fade mode)
+  - Green material (Standard shader, Fade mode)
+  - Blue material (Standard shader, Fade mode)
+  - Yellow material (Standard shader, Fade mode)
+
+Fonts (TextMeshPro):
+  - Default TMP Font Asset (usually included)
+  - Optional: Custom font for UI
+
+================================================================================
+FIREBASE INITIALIZATION
+================================================================================
+
+1. Import Firebase SDK (already done in your project)
+
+2. In Firebase Console:
+   - Create Realtime Database (Test Mode or with rules from FIREBASE_RULES.txt)
+   - Enable Email/Password Authentication
+   - Enable Sign-up (in Auth > Sign-in method)
+
+3. Add Firebase config to project:
+   - Download google-services.json
+   - Place in Assets/ folder
+   - Or use Firebase Editor window to configure
+
+4. Set Database Rules (copy from FIREBASE_RULES.txt):
+   {
+     "rules": {
+       "users": {
+         "$uid": {
+           ".read": "auth != null && auth.uid == $uid",
+           ".write": "auth != null && auth.uid == $uid",
+           ".validate": "newData.hasChildren(['username', 'highScore'])"
+         }
+       },
+       "leaderboard": {
+         ".read": "auth != null",
+         "$uid": {
+           ".write": "auth != null && auth.uid == $uid",
+           ".validate": "newData.hasChildren(['username', 'score'])"
+         }
+       }
+     }
+   }
+
+================================================================================
+TESTING CHECKLIST
+================================================================================
+
+[ ] Firebase Manager initializes without errors
+[ ] Login scene loads and shows correctly
+[ ] Register creates new user and saves to Firebase
+[ ] Login retrieves user data (username, highScore)
+[ ] Logout signs out and returns to Login
+[ ] Password Reset sends email (check spam folder)
+[ ] Game scene loads after successful login
+[ ] Simon Says game plays sequence correctly
+[ ] Cubes highlight on click and play audio
+[ ] Score increments after successful round
+[ ] Score saves to Firebase when round completes
+[ ] Score saves to leaderboard when game ends
+[ ] Leaderboard scene loads and displays top 10 players
+[ ] Back button on Leaderboard returns to Game
+[ ] Multiple users can login and see their own high scores
+[ ] High score updates only if new score is higher
+
+================================================================================
+QUICK REFERENCE: FILE PATHS
+================================================================================
+
+Scripts:
+  Assets/Code/Scripts/FirebaseManager.cs
+  Assets/Code/Scripts/LoginUI.cs
+  Assets/Code/Scripts/RegisterUI.cs
+  Assets/Code/Scripts/ForgotPasswordUI.cs
+  Assets/Code/Scripts/LeaderboardUI.cs
+  Assets/Code/Scripts/LeaderboardRow.cs
+  Assets/Code/Scripts/SimonSays.cs (in SimonSaysManager.cs)
+  Assets/Code/Scripts/SimonCube.cs
+  Assets/Code/Scripts/ApiManager.cs
+
+Database Rules:
+  Assets/Code/Scripts/FIREBASE_RULES.txt
+
+Prefabs:
+  Assets/Prefabs/CardPrefab.prefab (CardHolder)
+  Assets/Prefabs/LeaderboardRow.prefab
+
+Scenes:
+  Assets/Scenes/Login.unity
+  Assets/Scenes/Register.unity
+  Assets/Scenes/ForgotPassword.unity
+  Assets/Scenes/Game.unity
+  Assets/Scenes/Leaderboard.unity
+
+================================================================================
+END OF SETUP GUIDE
+================================================================================
+*/

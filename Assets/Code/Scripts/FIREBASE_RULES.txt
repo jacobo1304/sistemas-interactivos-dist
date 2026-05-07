@@ -1,0 +1,82 @@
+/*
+=== FIREBASE REALTIME DATABASE SECURITY RULES ===
+
+DEVELOPMENT RULES (use these first for testing):
+=========================================
+
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.uid == $uid"
+      }
+    },
+    "leaderboard": {
+      ".read": "auth != null",
+      "$uid": {
+        ".write": "auth != null && auth.uid == $uid"
+      }
+    }
+  }
+}
+
+PRODUCTION RULES (use after testing is complete):
+==============================================
+
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        ".write": "auth != null && auth.uid == $uid",
+        "username": {
+          ".validate": "newData.isString() && newData.val().length > 0"
+        },
+        "highScore": {
+          ".validate": "newData.isNumber() && newData.val() >= 0"
+        }
+      }
+    },
+    "leaderboard": {
+      ".read": "auth != null",
+      "$uid": {
+        ".write": "auth != null && auth.uid == $uid",
+        "username": {
+          ".validate": "newData.isString() && newData.val().length > 0"
+        },
+        "score": {
+          ".validate": "newData.isNumber() && newData.val() > 0"
+        }
+      }
+    }
+  }
+}
+
+TROUBLESHOOTING INTERNAL ERROR:
+==============================
+
+1. Go to Firebase Console → Realtime Database → Rules
+2. Paste the DEVELOPMENT RULES above (less strict)
+3. Click "Publish"
+4. Check if "Internal error" goes away
+
+Common causes of "An internal error has occurred":
+✗ .validate with newData.hasChildren() - too restrictive
+✗ Validation rules that cascade incorrectly  
+✗ Auth not properly initialized before writes
+✓ Use field-level .validate rules instead
+✓ Remove complex validation during development
+✓ Ensure user is authenticated (check FirebaseAuth.CurrentUser)
+
+DEBUG CHECKLIST:
+===============
+[ ] Go to Firebase Console > Database > Data tab
+[ ] Create dummy users entry manually to verify structure
+[ ] Check that users/{userId}/username exists
+[ ] Check that users/{userId}/highScore is a number
+[ ] Verify Auth section in Firebase shows your test user
+[ ] Check Database Rules for any red validation errors
+[ ] Try Test Mode rules first (auth != null only)
+[ ] Monitor the real-time logs in Firebase Console
+*/

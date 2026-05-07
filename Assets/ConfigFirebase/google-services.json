@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "714312882969",
+    "firebase_url": "https://actividad-5-sid-jacobo-default-rtdb.firebaseio.com",
+    "project_id": "actividad-5-sid-jacobo",
+    "storage_bucket": "actividad-5-sid-jacobo.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:714312882969:android:dec2aed02bc9f906ac0388",
+        "android_client_info": {
+          "package_name": "com.JacoboRodriguez.Distribumierdas5"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBhzWa3O-gSeV9Jq4MsZ-81OgqQtU7LI4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
